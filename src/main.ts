@@ -70,8 +70,12 @@ async function run() {
       core.error("No release files (.apk or .aab) could be found. Abort.");
       core.setFailed('No release files (.apk or .aab) could be found.');
     }
-  } catch (error) {
-    core.setFailed(error.message);
+  } catch (error:any) {
+    if (typeof error === "string") {
+      core.setFailed(error);
+    } else if (error instanceof Error) {
+      core.setFailed(error.message);
+    }
   }
 }
 

@@ -59,7 +59,12 @@ export async function signApkFile(
         signedApkFile
     ]);
 
-    return signedApkFile
+    await exec.exec(`"cp"`, [
+        signedApkFile,
+        apkFile,
+    ]);
+
+    return apkFile
 }
 
 export async function signAabFile(
