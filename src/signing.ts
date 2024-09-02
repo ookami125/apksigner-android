@@ -13,8 +13,6 @@ export async function signApkFile(
     customArgs?: string,
 ): Promise<string> {
 
-    core.debug("Zipaligning APK file");
-
     // Find zipalign executable
     const buildToolsVersion = process.env.BUILD_TOOLS_VERSION || '29.0.3';
     const androidHome = process.env.ANDROID_HOME;
@@ -22,22 +20,6 @@ export async function signApkFile(
     if (!fs.existsSync(buildTools)) {
         core.error(`Couldnt find the Android build tools @ ${buildTools}`)
     }
-
-    const zipAlign = path.join(buildTools, 'zipalign');
-    core.debug(`Found 'zipalign' @ ${zipAlign}`);
-
-    // Align the apk file
-    const alignedApkFile = apkFile.replace('.apk', '-aligned.apk');
-    await exec.exec(`"${zipAlign}"`, [
-        '-c',
-        '-v', '4',
-        apkFile
-    ]);
-
-    await exec.exec(`"cp"`, [
-        apkFile,
-        alignedApkFile
-    ]);
 
     core.debug("Signing APK file");
 
@@ -66,7 +48,7 @@ export async function signApkFile(
         });
     }
 
-    args.push(alignedApkFile);
+    args.push(apkFile);
 
     await exec.exec(`"${apkSigner}"`, args);
 
